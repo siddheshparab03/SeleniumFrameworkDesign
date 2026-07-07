@@ -1,21 +1,17 @@
 package org.rahulshettyacademy.Tests;
 
-import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.rahulshettyacademy.PageObjects.CartPage;
+import org.rahulshettyacademy.PageObjects.CheckoutPage;
 import org.rahulshettyacademy.PageObjects.ProductCatalogue;
 import org.rahulshettyacademy.TestComponents.BaseTest;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.time.Duration;
-import java.util.List;
 
 public class SubmitOrderTest extends BaseTest {
 
@@ -28,13 +24,10 @@ public class SubmitOrderTest extends BaseTest {
 		ProductCatalogue productCatalogue = landingPage.goToProductCatalogue();
 		productCatalogue.getProductByName(productName);
 		productCatalogue.addProductToCart(productName);
-		productCatalogue.goToCartPage();
-
-		List<WebElement> cartProducts = driver.findElements(By.cssSelector(".cartSection h3"));
-		Boolean match = cartProducts.stream().anyMatch(cartProduct -> cartProduct.getText().equalsIgnoreCase(productName));
+		CartPage cartPage = productCatalogue.goToCartPage();
+		Boolean match = cartPage.verifyProductAddedInCart(productName);
 		Assert.assertTrue(match);
-		driver.findElement(By.cssSelector(".totalRow button")).click();
-
+		 CheckoutPage checkoutPage =  cartPage.goToCheckoutPage();
 		Actions a = new Actions(driver);
 		a.sendKeys(driver.findElement(By.cssSelector("[placeholder='Select Country']")), "india").build().perform();
 

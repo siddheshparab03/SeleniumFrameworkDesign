@@ -23,23 +23,12 @@ public class SubmitOrderTest extends BaseTest {
 	public void submitOrder() {
 		// TODO Auto-generated method stub
 		String productName = "ZARA COAT 3";
-
+		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
 		landingPage.loginApplication("anshika@gmail.com", "Iamking@000");
 		ProductCatalogue productCatalogue = landingPage.goToProductCatalogue();
-		
-		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
-		wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".mb-3")));
-		List<WebElement> products = driver.findElements(By.cssSelector(".mb-3"));
-
-		WebElement prod = products.stream().filter(product ->
-				product.findElement(By.cssSelector("b")).getText().equals(productName)).findFirst().orElse(null);
-		prod.findElement(By.cssSelector(".card-body button:last-of-type")).click();
-
-
-		wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("#toast-container")));
-		//ng-animating
-		wait.until(ExpectedConditions.invisibilityOf(driver.findElement(By.cssSelector(".ng-animating"))));
-		driver.findElement(By.cssSelector("[routerlink*='cart']")).click();
+		productCatalogue.getProductByName(productName);
+		productCatalogue.addProductToCart(productName);
+		productCatalogue.goToCartPage();
 
 		List<WebElement> cartProducts = driver.findElements(By.cssSelector(".cartSection h3"));
 		Boolean match = cartProducts.stream().anyMatch(cartProduct -> cartProduct.getText().equalsIgnoreCase(productName));

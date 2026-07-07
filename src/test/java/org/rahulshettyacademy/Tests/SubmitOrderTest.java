@@ -6,6 +6,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.rahulshettyacademy.PageObjects.CartPage;
 import org.rahulshettyacademy.PageObjects.CheckoutPage;
+import org.rahulshettyacademy.PageObjects.ConfirmationPage;
 import org.rahulshettyacademy.PageObjects.ProductCatalogue;
 import org.rahulshettyacademy.TestComponents.BaseTest;
 import org.testng.Assert;
@@ -27,17 +28,10 @@ public class SubmitOrderTest extends BaseTest {
 		CartPage cartPage = productCatalogue.goToCartPage();
 		Boolean match = cartPage.verifyProductAddedInCart(productName);
 		Assert.assertTrue(match);
-		 CheckoutPage checkoutPage =  cartPage.goToCheckoutPage();
-		Actions a = new Actions(driver);
-		a.sendKeys(driver.findElement(By.cssSelector("[placeholder='Select Country']")), "india").build().perform();
-
-		wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".ta-results")));
-
-		driver.findElement(By.xpath("(//button[contains(@class,'ta-item')])[2]")).click();
-		driver.findElement(By.cssSelector(".action__submit")).click();
-
-		String confirmMessage = driver.findElement(By.cssSelector(".hero-primary")).getText();
+		CheckoutPage checkoutPage =  cartPage.goToCheckoutPage();
+		checkoutPage.selectCountryFromDropdown();
+		ConfirmationPage confirmationPage = checkoutPage.submitOrder();
+		String confirmMessage = confirmationPage.getConfirmationMessage();
 		Assert.assertTrue(confirmMessage.equalsIgnoreCase("THANKYOU FOR THE ORDER."));
-		
 	}
 }

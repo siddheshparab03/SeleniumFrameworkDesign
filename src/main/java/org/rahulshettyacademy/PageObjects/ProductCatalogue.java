@@ -22,7 +22,9 @@ public class ProductCatalogue extends AbstractComponent {
     List<WebElement> products;
 
     By addToCart = By.cssSelector(".card-body button:last-of-type");
-    By toastMsg = By.cssSelector("#toast-container");
+//    By toastMsg = By.cssSelector("#toast-container");
+    @FindBy(css = "#toast-container")
+    private WebElement toastMsg;
     @FindBy(css = ".ng-animating")
     private WebElement spinner;
 
@@ -40,13 +42,10 @@ public class ProductCatalogue extends AbstractComponent {
 
     public void addProductToCart(String productName){
         WebElement prod = getProductByName(productName);
-        waitUntilElementBeClickable(addToCart);
         prod.findElement(addToCart).click();
         waitUntilElementAppear(toastMsg);
         waitUntilElementDisappear(spinner);
+        // Also wait for the toast message to disappear
+        waitUntilElementDisappear(toastMsg);
     }
-
-
-
-
 }

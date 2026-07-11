@@ -2,6 +2,7 @@ package org.rahulshettyacademy.TestComponents;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.apache.commons.io.FileUtils;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
@@ -19,7 +20,7 @@ import java.util.Properties;
 
 public class BaseTest {
     public WebDriver driver;
-    public  LandingPage landingPage;
+    public LandingPage landingPage;
 
     @BeforeMethod(alwaysRun = true)
     public LandingPage launchApplication() throws IOException {
@@ -30,27 +31,37 @@ public class BaseTest {
 
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--incognito");
-        //options.addArguments("--headless=new");
+
+        // Check for a 'headless' system property
+        boolean headless = "true".equalsIgnoreCase(System.getProperty("headless"));
+
+        if (headless) {
+            options.addArguments("--headless=new");
+        }
 
         WebDriverManager.chromedriver().setup();
         driver = new ChromeDriver(options);
-        //driver.manage().window().setSize(new Dimension(1440,900));//full screen
-        driver.manage().window().maximize();
+
+        // Set a specific size for headless mode, otherwise maximize
+        if (headless) {
+            driver.manage().window().setSize(new Dimension(1440, 900));
+        } else {
+            driver.manage().window().maximize();
+        }
+
         driver.get(url);
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
         landingPage = new LandingPage(driver);
         return landingPage;
-
     }
 
     public String getScreenshot(String testCaseName, WebDriver driver) throws IOException {
-        TakesScreenshot ts = (TakesScreenshot)driver;
+        TakesScreenshot ts = (TakesScreenshot) driver;
         File source = ts.getScreenshotAs(OutputType.FILE);
         File file = new File(System.getProperty("user.dir") + "//reports//" + testCaseName + ".png");
         FileUtils.copyFile(source, file);
         return System.getProperty("user.dir") + "//reports//" + testCaseName + ".png";
     }
-
 
     @AfterMethod(alwaysRun = true)
     public void tearDown() {

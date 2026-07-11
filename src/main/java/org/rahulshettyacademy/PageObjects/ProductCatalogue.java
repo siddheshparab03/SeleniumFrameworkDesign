@@ -40,6 +40,7 @@ public class ProductCatalogue extends AbstractComponent {
 
     public void addProductToCart(String productName){
         WebElement prod = getProductByName(productName);
+        waitUntilElementBeClickable(addToCart);
         prod.findElement(addToCart).click();
         waitUntilElementAppear(toastMsg);
         waitUntilElementDisappear(spinner);

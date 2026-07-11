@@ -32,9 +32,20 @@ public class AbstractComponent {
         wait.until(ExpectedConditions.invisibilityOf(ele));
     }
 
+    public void waitUntilElementBeClickable(By findBy){
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+        wait.until(ExpectedConditions.elementToBeClickable(findBy));
+    }
+
     public CartPage goToCartPage(){
+        waitUntilElementBeClickable(By.cssSelector("[routerlink*='cart'"));
        cartButton.click();
        return new CartPage(driver);
+    }
+
+    public void waitUntilElementAppear(WebElement ele){
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+        wait.until(ExpectedConditions.visibilityOf(ele));
     }
 
 
